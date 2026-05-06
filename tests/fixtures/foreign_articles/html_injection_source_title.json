@@ -1,0 +1,8 @@
+{
+  "source_name": "Example <script>alert(1)</script>",
+  "source_url": "https://example.com/html-injection?x=1&y=2",
+  "original_language": "en",
+  "published_at": "2026-05-06T12:00:00-04:00",
+  "title": "Nvidia <b>beats</b> estimates & says AI demand is strong",
+  "text_excerpt": "Nvidia said AI demand remained strong. The title contains HTML-sensitive characters that must be escaped before sending to Telegram."
+}

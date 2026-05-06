@@ -1,0 +1,112 @@
+defaults:
+  sort: "date"
+  display: 10
+  exclude_domains:
+    - "blog.naver.com"
+    - "cafe.naver.com"
+    - "post.naver.com"
+    - "sports.news.naver.com"
+    - "entertain.naver.com"
+
+query_packs:
+  - name: "company_events"
+    label: "기업 이벤트"
+    lane: "company_events"
+    language: "ko"
+    enabled: true
+    search_interval_minutes: 20
+    max_results: 6
+    queries:
+      - "영업이익 가이던스 상향"
+      - "대규모 수주 공급계약"
+      - "신규 공장 증설 투자"
+      - "자사주 소각 배당 주주환원"
+      - "가격 인상 마진 개선"
+      - "기술수출 라이선스 계약"
+
+  - name: "semiconductor_ai"
+    label: "반도체/AI 산업"
+    lane: "semiconductor_ai"
+    language: "ko"
+    enabled: true
+    search_interval_minutes: 20
+    max_results: 6
+    queries:
+      - "HBM 공급 SK하이닉스 삼성전자"
+      - "AI 서버 메모리 수요"
+      - "반도체 장비 수주"
+      - "TSMC 엔비디아 HBM"
+      - "데이터센터 전력 반도체"
+      - "메모리 가격 반등"
+
+  - name: "battery_ev"
+    label: "2차전지/전기차 산업"
+    lane: "battery_ev"
+    language: "ko"
+    enabled: true
+    search_interval_minutes: 30
+    max_results: 5
+    queries:
+      - "전기차 판매 배터리 수요"
+      - "2차전지 소재 공급계약"
+      - "ESS 배터리 수주"
+      - "리튬 니켈 가격 배터리"
+      - "미국 전기차 보조금 배터리"
+
+  - name: "defense_shipbuilding_energy"
+    label: "방산/조선/에너지"
+    lane: "defense_shipbuilding_energy"
+    language: "ko"
+    enabled: true
+    search_interval_minutes: 30
+    max_results: 5
+    queries:
+      - "방산 수출 계약"
+      - "조선 LNG선 수주"
+      - "원전 수출 체코 폴란드"
+      - "전력기기 변압기 수주"
+      - "전력망 투자 전선"
+      - "LNG 운반선 조선 수주"
+
+  - name: "bio_healthcare"
+    label: "바이오/헬스케어"
+    lane: "bio_healthcare"
+    language: "ko"
+    enabled: true
+    search_interval_minutes: 40
+    max_results: 4
+    queries:
+      - "임상 3상 결과 발표"
+      - "FDA 승인 품목허가"
+      - "바이오 기술수출 계약"
+      - "신약 허가 매출 전망"
+      - "의료기기 미국 승인"
+
+  - name: "geopolitics_supply_chain"
+    label: "지정학/공급망"
+    lane: "geopolitics_supply_chain"
+    language: "ko"
+    enabled: true
+    search_interval_minutes: 30
+    max_results: 6
+    queries:
+      - "미국 중국 반도체 수출통제"
+      - "중국 희토류 수출통제"
+      - "관세 공급망 한국 기업"
+      - "중동 리스크 유가 해운"
+      - "러시아 우크라이나 방산 에너지"
+      - "대만 해협 반도체 공급망"
+
+  - name: "global_company_to_korea"
+    label: "글로벌 기업→국내 연결"
+    lane: "global_company_to_korea"
+    language: "ko"
+    enabled: true
+    search_interval_minutes: 30
+    max_results: 5
+    queries:
+      - "엔비디아 실적 SK하이닉스 삼성전자"
+      - "테슬라 인도량 2차전지"
+      - "애플 아이폰 부품주"
+      - "AMD 가이던스 반도체"
+      - "마이크로소프트 데이터센터 전력기기"

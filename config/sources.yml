@@ -1,0 +1,254 @@
+sources:
+  # Main domestic discovery source. Naver News API is used for finding
+  # investment-relevant articles, not for reposting full article text.
+  - name: "Naver News - investment query packs"
+    type: "naver_news"
+    category: "stock"
+    country: "KR"
+    language: "ko"
+    reliability_score: 0.72
+    crawl_interval_minutes: 15
+    license_status: "link_only"
+    is_active: true
+    crawl_mode: "api"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "link_only"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 20
+    options:
+      provider: "Naver"
+      query_config_path: "config/source_queries.yml"
+      query_packs:
+        - "company_events"
+        - "semiconductor_ai"
+        - "battery_ev"
+        - "defense_shipbuilding_energy"
+        - "bio_healthcare"
+        - "geopolitics_supply_chain"
+        - "global_company_to_korea"
+      exclude_domains:
+        - "blog.naver.com"
+        - "cafe.naver.com"
+        - "post.naver.com"
+
+  # Foreign RSS: use only official/public feeds and keep every item under
+  # admin approval. Summaries must add a domestic sector/company connection.
+  - name: "CNBC Markets RSS"
+    type: "rss"
+    feed_url: "https://www.cnbc.com/id/10001147/device/rss/rss.html"
+    category: "us_market"
+    country: "US"
+    language: "en"
+    reliability_score: 0.78
+    crawl_interval_minutes: 20
+    license_status: "link_only"
+    is_active: true
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "CNBC"
+      lane: "미국장/글로벌 시장"
+
+  - name: "CNBC Technology RSS"
+    type: "rss"
+    feed_url: "https://www.cnbc.com/id/19854910/device/rss/rss.html"
+    category: "foreign_rss"
+    country: "US"
+    language: "en"
+    reliability_score: 0.76
+    crawl_interval_minutes: 30
+    license_status: "link_only"
+    is_active: true
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "CNBC"
+      lane: "미국 빅테크/AI"
+
+  - name: "Nasdaq Earnings RSS"
+    type: "rss"
+    feed_url: "https://www.nasdaq.com/feed/rssoutbound?category=Earnings"
+    category: "foreign_rss"
+    country: "US"
+    language: "en"
+    reliability_score: 0.76
+    crawl_interval_minutes: 30
+    license_status: "link_only"
+    is_active: true
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "Nasdaq"
+      lane: "미국 실적"
+      request_headers:
+        User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+        Accept: "application/rss+xml,application/xml,text/xml,*/*"
+        Accept-Language: "en-US,en;q=0.9"
+
+  - name: "Nasdaq Markets RSS"
+    type: "rss"
+    feed_url: "https://www.nasdaq.com/feed/rssoutbound?category=Markets"
+    category: "us_market"
+    country: "US"
+    language: "en"
+    reliability_score: 0.76
+    crawl_interval_minutes: 30
+    license_status: "link_only"
+    is_active: true
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "Nasdaq"
+      lane: "미국 시장"
+      request_headers:
+        User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+        Accept: "application/rss+xml,application/xml,text/xml,*/*"
+        Accept-Language: "en-US,en;q=0.9"
+
+  - name: "Nasdaq NVDA RSS"
+    type: "rss"
+    feed_url: "https://www.nasdaq.com/feed/rssoutbound?symbol=NVDA"
+    category: "foreign_rss"
+    country: "US"
+    language: "en"
+    reliability_score: 0.76
+    crawl_interval_minutes: 45
+    license_status: "link_only"
+    is_active: true
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "Nasdaq"
+      lane: "엔비디아/HBM"
+      request_headers:
+        User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+        Accept: "application/rss+xml,application/xml,text/xml,*/*"
+        Accept-Language: "en-US,en;q=0.9"
+
+  - name: "Nasdaq TSLA RSS"
+    type: "rss"
+    feed_url: "https://www.nasdaq.com/feed/rssoutbound?symbol=TSLA"
+    category: "foreign_rss"
+    country: "US"
+    language: "en"
+    reliability_score: 0.74
+    crawl_interval_minutes: 45
+    license_status: "link_only"
+    is_active: true
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "Nasdaq"
+      lane: "테슬라/2차전지"
+      request_headers:
+        User-Agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+        Accept: "application/rss+xml,application/xml,text/xml,*/*"
+        Accept-Language: "en-US,en;q=0.9"
+
+  # Backup Korean RSS is disabled by default. Broad 증권 RSS frequently
+  # brings in chart-signal or recommendation-style posts, which are not a
+  # good fit for the current company/industry/geopolitics channel direction.
+  - name: "매일경제 증권 RSS"
+    type: "rss"
+    feed_url: "https://www.mk.co.kr/rss/50200011/"
+    category: "backup_kr_rss"
+    country: "KR"
+    language: "ko"
+    reliability_score: 0.68
+    crawl_interval_minutes: 30
+    license_status: "link_only"
+    is_active: false
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "MK"
+      lane: "국내 증권 RSS 보조"
+
+  - name: "한국경제 증권 RSS"
+    type: "rss"
+    feed_url: "https://www.hankyung.com/feed/finance"
+    category: "backup_kr_rss"
+    country: "KR"
+    language: "ko"
+    reliability_score: 0.68
+    crawl_interval_minutes: 30
+    license_status: "link_only"
+    is_active: false
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "unknown"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "Hankyung"
+      lane: "국내 증권 RSS 보조"
+
+  - name: "아시아경제 증권 RSS"
+    type: "rss"
+    feed_url: "https://www.asiae.co.kr/rss/stock.htm"
+    category: "backup_kr_rss"
+    country: "KR"
+    language: "ko"
+    reliability_score: 0.62
+    crawl_interval_minutes: 30
+    license_status: "link_only"
+    is_active: false
+    crawl_mode: "rss"
+    template_policy: "auto"
+    requires_approval: true
+    cooldown_minutes: 180
+    commercial_use_status: "non_commercial_only"
+    auto_publish_allowed: false
+    rate_limit:
+      requests_per_minute: 6
+    options:
+      provider: "Asiae"
+      lane: "국내 증권 RSS 보조"

@@ -1,0 +1,8 @@
+{
+  "source_name": "Long Brief Example",
+  "source_url": "https://example.com/long-brief",
+  "original_language": "en",
+  "published_at": "2026-05-06T12:00:00-04:00",
+  "title": "Long market brief input",
+  "text_excerpt": "This fixture is used by tests that construct an intentionally overlength MarketBrief."
+}
