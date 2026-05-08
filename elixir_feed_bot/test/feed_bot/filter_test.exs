@@ -8,43 +8,38 @@ defmodule FeedBot.FilterTest do
       Event,
       Map.merge(
         %{
-          source: :dart,
-          external_id: "test-id",
-          title: "신규시설투자결정",
-          url: "https://dart.fss.or.kr",
-          published_at: DateTime.utc_now()
+          source_id: :test,
+          source_name: "테스트",
+          source_tier: :major,
+          source_lang: :ko,
+          external_id: "https://example.com/a",
+          title: "삼성전자, AI 반도체 공장 신설 발표",
+          url: "https://example.com/a",
+          description: ""
         },
         attrs
       )
     )
   end
 
-  test "categorizes DART capex filings with high base score" do
-    ev = Filter.categorize(event(%{title: "신규시설투자결정"}))
+  test "rejects price and theme style news" do
+    ev = event(%{title: "반도체 수혜주 급등, 다음 대장주는?"})
+
+    refute Filter.relevant?(ev)
+    assert Filter.categorize(ev).base_score == 0
+  end
+
+  test "scores concrete industry events higher" do
+    ev = event(%{}) |> Filter.categorize()
 
     assert ev.category == :capex
-    assert ev.base_score == 9
+    assert ev.base_score >= 7
   end
 
-  test "rejects correction filings even when title contains a whitelist keyword" do
-    ev = Filter.categorize(event(%{title: "[기재정정]신규시설투자결정"}))
+  test "specialist sources receive tier bonus" do
+    specialist = event(%{source_tier: :specialist}) |> Filter.categorize()
+    general = event(%{source_tier: :general}) |> Filter.categorize()
 
-    assert ev.category == :other
-    assert ev.base_score == 0
-    refute Filter.relevant?(ev)
-  end
-
-  test "adds EDGAR title bonus with a cap" do
-    ev =
-      event(%{
-        source: :edgar,
-        title: "Company announces acquisition and merger agreement with CEO transition",
-        form_type: "8-K",
-        items: ["1.01"]
-      })
-      |> Filter.categorize()
-
-    assert ev.category == :contract
-    assert ev.base_score == 10
+    assert specialist.base_score > general.base_score
   end
 end

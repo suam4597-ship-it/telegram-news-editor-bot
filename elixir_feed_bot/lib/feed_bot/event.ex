@@ -1,46 +1,46 @@
 defmodule FeedBot.Event do
   @moduledoc """
-  공시·이벤트의 정규화된 형태.
+  뉴스 기사의 정규화된 형태.
   파이프라인의 모든 단계에서 이 구조체를 주고받는다.
   """
 
-  @enforce_keys [:source, :external_id, :title, :url, :published_at]
+  @enforce_keys [:source_id, :source_name, :title, :url, :external_id]
   defstruct [
-    # :dart | :edgar
-    :source,
-    # 소스별 고유 ID (rcept_no, accession_number 등)
+    # 매체 정보 (Feeds.ex 에서 주입)
+    # atom, 예: :hankyung_industry
+    :source_id,
+    # 표시용, 예: "한국경제 산업"
+    :source_name,
+    # :specialist | :major | :general
+    :source_tier,
+    # :ko | :en
+    :source_lang,
+
+    # 기사 자체
+    # canonical URL (utm 파라미터 제거됨) — dedup 키
     :external_id,
-    # 공시 제목 / 양식명
     :title,
-    # 1차 자료 링크
     :url,
-    # DateTime
+    # RSS 제공 요약 (있을 때만, HTML 제거됨, 500자 컷)
+    :description,
     :published_at,
-    # 종목 코드 (있으면)
-    :ticker,
-    # 기업명
-    :company,
-    # "8-K", "B001" 등
-    :form_type,
-    # 8-K Items 리스트, DART 상세타입 등
-    :items,
-    # 원본 페이로드 (디버그·재처리용)
+    # 디버그용
     :raw,
 
-    # Filter가 채우는 것
-    # :ma | :capex | :contract | :officer | ...
+    # Filter 가 채움
+    # :ma | :capex | :product | :partnership | :ip | :officer | :regulation | :financial | :other
     :category,
-    # 0..10. 룰 기반 사전 점수 → LLM에 anchor로 전달
+    # 0..10 룰 기반 사전 점수
     :base_score,
 
-    # LLM이 채우는 것
-    # 0..10. 최종 컷오프에 사용
+    # LLM 이 채움
+    # 0..10 최종 점수 (컷오프 기준)
     :importance,
-    # 한 줄 요약
+    # 한 줄 요약 (텔레그램에 들어가는 본문)
     :summary,
     # 영향 범위
     :impact,
-    # 이전 대비 변화 (있으면)
+    # 이전 보도 대비 변화 (있으면)
     :delta
   ]
 

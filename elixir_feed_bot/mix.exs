@@ -23,6 +23,8 @@ defmodule ElixirFeedBot.MixProject do
   defp deps do
     [
       {:gen_stage, "~> 1.2"},
+      {:broadway, "~> 1.2"},
+      {:floki, "~> 0.37"},
       {:jason, "~> 1.4"},
       {:req, "~> 0.5"}
     ]
