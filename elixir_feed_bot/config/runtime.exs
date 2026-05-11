@@ -1,10 +1,17 @@
 import Config
 
 config :feed_bot,
+  llm_provider:
+    System.get_env("LLM_PROVIDER") ||
+      "auto",
+  openai_api_key: System.get_env("OPENAI_API_KEY"),
+  openai_model:
+    System.get_env("OPENAI_MODEL") ||
+      "gpt-5.2",
   anthropic_api_key: System.get_env("ANTHROPIC_API_KEY"),
-  llm_model:
-    System.get_env("LLM_MODEL") ||
-      System.get_env("ANTHROPIC_MODEL") ||
+  anthropic_model:
+    System.get_env("ANTHROPIC_MODEL") ||
+      System.get_env("LLM_MODEL") ||
       "claude-haiku-4-5-20251001",
   http_user_agent:
     System.get_env("HTTP_USER_AGENT") ||
@@ -12,6 +19,7 @@ config :feed_bot,
   telegram_bot_token: System.get_env("TELEGRAM_BOT_TOKEN"),
   telegram_chat_id:
     System.get_env("TELEGRAM_CHAT_ID") ||
+      System.get_env("TELEGRAM_ADMIN_CHANNEL_ID") ||
       System.get_env("TELEGRAM_CHANNEL_ID") ||
       System.get_env("TELEGRAM_PUBLIC_CHANNEL_ID"),
   poll_interval_ms:

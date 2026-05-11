@@ -28,3 +28,4 @@ elixir_feed_bot-*.tar
 # Local environment files.
 .env
 .env.*
+!.env.example

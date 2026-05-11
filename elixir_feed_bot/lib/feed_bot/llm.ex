@@ -7,7 +7,8 @@ defmodule FeedBot.LLM do
   require Logger
   alias FeedBot.Event
 
-  @endpoint "https://api.anthropic.com/v1/messages"
+  @anthropic_endpoint "https://api.anthropic.com/v1/messages"
+  @openai_endpoint "https://api.openai.com/v1/responses"
 
   @spec enrich(Event.t()) :: Event.t()
   def enrich(%Event{} = ev) do
@@ -26,6 +27,10 @@ defmodule FeedBot.LLM do
         %{ev | importance: 0}
     end
   end
+
+  @doc false
+  @spec provider() :: :openai | :anthropic | :none
+  def provider, do: resolve_provider()
 
   # ────────────────────────────────────────────
   defp prompt(%Event{} = ev) do
@@ -83,12 +88,52 @@ defmodule FeedBot.LLM do
     """
   end
 
-  # ────────────────────────────────────────────
   defp call(user_prompt) do
-    api_key = Application.get_env(:feed_bot, :anthropic_api_key)
-    model = Application.get_env(:feed_bot, :llm_model, "claude-haiku-4-5-20251001")
+    case resolve_provider() do
+      :openai -> call_openai(user_prompt)
+      :anthropic -> call_anthropic(user_prompt)
+      :none -> {:error, :no_llm_api_key}
+    end
+  end
 
-    if is_nil(api_key) do
+  defp resolve_provider do
+    configured =
+      :feed_bot
+      |> Application.get_env(:llm_provider, "auto")
+      |> normalize_provider()
+
+    case configured do
+      :openai -> :openai
+      :anthropic -> :anthropic
+      :auto -> auto_provider()
+    end
+  end
+
+  defp normalize_provider(provider) when provider in [:openai, :anthropic, :auto], do: provider
+
+  defp normalize_provider(provider) when is_binary(provider) do
+    case String.downcase(provider) do
+      "openai" -> :openai
+      "anthropic" -> :anthropic
+      _ -> :auto
+    end
+  end
+
+  defp normalize_provider(_), do: :auto
+
+  defp auto_provider do
+    cond do
+      present?(Application.get_env(:feed_bot, :openai_api_key)) -> :openai
+      present?(Application.get_env(:feed_bot, :anthropic_api_key)) -> :anthropic
+      true -> :none
+    end
+  end
+
+  defp call_anthropic(user_prompt) do
+    api_key = Application.get_env(:feed_bot, :anthropic_api_key)
+    model = Application.get_env(:feed_bot, :anthropic_model, "claude-haiku-4-5-20251001")
+
+    if not present?(api_key) do
       {:error, :no_api_key}
     else
       body = %{
@@ -108,7 +153,7 @@ defmodule FeedBot.LLM do
       ]
 
       with {:ok, %{status: 200, body: %{"content" => [%{"text" => text} | _]}}} <-
-             Req.post(@endpoint, headers: headers, json: body, receive_timeout: 30_000),
+             Req.post(@anthropic_endpoint, headers: headers, json: body, receive_timeout: 30_000),
            {:ok, parsed} <- Jason.decode("{" <> text) do
         {:ok, parsed}
       else
@@ -119,11 +164,87 @@ defmodule FeedBot.LLM do
     end
   end
 
+  defp call_openai(user_prompt) do
+    api_key = Application.get_env(:feed_bot, :openai_api_key)
+    model = Application.get_env(:feed_bot, :openai_model, "gpt-5.2")
+
+    if not present?(api_key) do
+      {:error, :no_api_key}
+    else
+      body = %{
+        model: model,
+        input: user_prompt,
+        text: %{
+          format: %{
+            type: "json_schema",
+            name: "feed_bot_news_enrichment",
+            strict: true,
+            schema: response_schema()
+          }
+        }
+      }
+
+      headers = [
+        {"authorization", "Bearer #{api_key}"},
+        {"content-type", "application/json"}
+      ]
+
+      with {:ok, %{status: 200, body: body}} <-
+             Req.post(@openai_endpoint, headers: headers, json: body, receive_timeout: 30_000),
+           {:ok, text} <- extract_openai_text(body),
+           {:ok, parsed} <- Jason.decode(text) do
+        {:ok, parsed}
+      else
+        {:ok, %{status: s, body: b}} -> {:error, {:http, s, b}}
+        {:error, e} -> {:error, {:openai, exception_message(e)}}
+        err -> err
+      end
+    end
+  end
+
+  defp response_schema do
+    %{
+      type: "object",
+      additionalProperties: false,
+      required: ["summary", "impact", "delta", "importance"],
+      properties: %{
+        summary: %{type: "string"},
+        impact: %{type: "string"},
+        delta: %{type: "string"},
+        importance: %{type: "integer", minimum: 0, maximum: 10}
+      }
+    }
+  end
+
+  defp extract_openai_text(%{"output_text" => text}) when is_binary(text), do: {:ok, text}
+
+  defp extract_openai_text(%{"output" => output}) when is_list(output) do
+    text =
+      output
+      |> Enum.flat_map(fn
+        %{"content" => content} when is_list(content) -> content
+        _ -> []
+      end)
+      |> Enum.find_value(fn
+        %{"type" => "output_text", "text" => text} when is_binary(text) -> text
+        %{"text" => text} when is_binary(text) -> text
+        _ -> nil
+      end)
+
+    if is_binary(text), do: {:ok, text}, else: {:error, :missing_openai_output_text}
+  end
+
+  defp extract_openai_text(_), do: {:error, :missing_openai_output_text}
+
   defp exception_message(e) do
     Exception.message(e)
   rescue
     _ -> inspect(e)
   end
+
+  defp present?(value) when is_binary(value), do: String.trim(value) != ""
+  defp present?(nil), do: false
+  defp present?(_), do: true
 
   defp anchored_importance(nil, n), do: clamp(n)
 
