@@ -166,7 +166,7 @@ defmodule FeedBot.LLM do
 
   defp call_openai(user_prompt) do
     api_key = Application.get_env(:feed_bot, :openai_api_key)
-    model = Application.get_env(:feed_bot, :openai_model, "gpt-5.2")
+    model = Application.get_env(:feed_bot, :openai_model, "gpt-5.4-mini")
 
     if not present?(api_key) do
       {:error, :no_api_key}

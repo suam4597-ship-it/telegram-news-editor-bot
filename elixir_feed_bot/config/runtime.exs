@@ -7,7 +7,7 @@ config :feed_bot,
   openai_api_key: System.get_env("OPENAI_API_KEY"),
   openai_model:
     System.get_env("OPENAI_MODEL") ||
-      "gpt-5.2",
+      "gpt-5.4-mini",
   anthropic_api_key: System.get_env("ANTHROPIC_API_KEY"),
   anthropic_model:
     System.get_env("ANTHROPIC_MODEL") ||

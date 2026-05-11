@@ -39,7 +39,7 @@ mix deps.get
 ```powershell
 $env:LLM_PROVIDER="auto"
 $env:OPENAI_API_KEY="..."
-$env:OPENAI_MODEL="gpt-5.2"
+$env:OPENAI_MODEL="gpt-5.4-mini"
 
 $env:TELEGRAM_BOT_TOKEN="..."
 $env:TELEGRAM_CHAT_ID="@your_channel"
