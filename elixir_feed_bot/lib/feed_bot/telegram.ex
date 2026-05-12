@@ -34,11 +34,11 @@ defmodule FeedBot.Telegram do
       "",
       "<b>#{esc(ev.summary || ev.title)}</b>",
       "",
+      "• <b>요약</b>: #{esc(ev.title)}",
       "• <b>시사점</b>: #{esc(ev.impact || "원문 확인이 필요합니다.")}",
       delta_line,
       "",
-      "출처: <a href=\"#{esc_attr(ev.url)}\">원문</a>",
-      "※ 정보 제공 목적이며 투자 권유가 아닙니다."
+      "출처: <a href=\"#{esc_attr(ev.url)}\">원문</a>"
     ]
     |> Enum.reject(&(&1 in [nil, ""]))
     |> Enum.join("\n")

@@ -112,4 +112,5 @@ mix compile --warnings-as-errors
 - 매수/매도/목표가/수익보장 표현을 만들지 않습니다.
 - 원문 전문을 저장하지 않고 RSS title/description/link만 사용합니다.
 - Telegram 메시지는 HTML parse mode로 발행하며, 모든 외부 텍스트는 escape합니다.
+- 메시지 본문 라벨은 `요약`, `시사점`, `변화`를 사용합니다.
 - LLM 중요도는 rule 기반 `base_score`의 ±2 범위 안으로 보정합니다.

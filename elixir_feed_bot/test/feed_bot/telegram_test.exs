@@ -25,9 +25,10 @@ defmodule FeedBot.TelegramTest do
     assert html =~ "<b>제품/기술</b>"
     assert html =~ "Test &amp; Source"
     assert html =~ "AI chip &lt;launch&gt;"
+    assert html =~ "• <b>요약</b>: Example &lt;launch&gt;"
     assert html =~ "HBM &amp; foundry"
     assert html =~ ~s(<a href="https://example.com/a?x=1&amp;y=2">원문</a>)
-    assert html =~ "※ 정보 제공 목적이며 투자 권유가 아닙니다."
+    refute html =~ "투자 권유"
     assert byte_size(html) <= Telegram.max_length()
   end
 end
